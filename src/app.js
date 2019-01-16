@@ -1,36 +1,29 @@
 const fs = require("fs");
 
-const send = function(req, res, statusCode, data = "") {
+const send = function(res, statusCode, data) {
   res.statusCode = statusCode;
   res.write(data);
   res.end();
-  return;
 };
 
-const handler = function(req, res, url, statusCode = 200) {
+const handler = function(res, url, statusCode = 200) {
   fs.readFile(url, (err, data) => {
     if (err) {
       send(res, 404, "file not found");
       return;
     }
-    send(req, res, statusCode, data);
+    send(res, statusCode, data);
   });
 };
 
+const getFilePath = function(url) {
+  if (url == "/") return "./src/index.html";
+  return "." + url;
+};
+
 const app = (req, res) => {
-  let currUrl = "";
-  if (req.url == "/favicon.ico") {
-    res.end();
-    return;
-  }
-  if (req.url == "/") {
-    currUrl = "./src/index.html";
-    handler(req, res, currUrl);
-    return;
-  }
-  currUrl = "." + req.url;
-  handler(req, res, currUrl);
-  return;
+  let filePath = getFilePath(req.url);
+  handler(res, filePath);
 };
 
 // Export a function that can act as a handler
