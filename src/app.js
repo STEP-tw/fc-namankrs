@@ -1,19 +1,19 @@
 const fs = require("fs");
 
-const send = function(res, statusCode, data = "") {
+const send = function(req, res, statusCode, data = "") {
   res.statusCode = statusCode;
   res.write(data);
   res.end();
   return;
 };
 
-const handler = function(url, res, statusCode = 200) {
+const handler = function(req, res, url, statusCode = 200) {
   fs.readFile(url, (err, data) => {
     if (err) {
       send(res, 404, "file not found");
       return;
     }
-    send(res, statusCode, data);
+    send(req, res, statusCode, data);
   });
 };
 
@@ -25,11 +25,11 @@ const app = (req, res) => {
   }
   if (req.url == "/") {
     currUrl = "./src/index.html";
-    handler(currUrl, res);
+    handler(req, res, currUrl);
     return;
   }
   currUrl = "." + req.url;
-  handler(currUrl, res);
+  handler(req, res, currUrl);
   return;
 };
 
