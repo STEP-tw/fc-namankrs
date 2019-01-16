@@ -1,0 +1,11 @@
+h1 {
+  margin-left: 50%;
+  color: orange;
+}
+main {
+  display: flex;
+  size: 50%;
+}
+section {
+  margin-top: 20%;
+}
