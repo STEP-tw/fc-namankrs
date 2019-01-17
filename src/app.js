@@ -1,5 +1,6 @@
 const fs = require("fs");
-
+const Handler = require("./handler");
+const app = new Handler();
 const send = function(res, statusCode, data) {
   res.statusCode = statusCode;
   res.write(data);
@@ -17,15 +18,18 @@ const handler = function(res, url, statusCode = 200) {
 };
 
 const getFilePath = function(url) {
-  if (url == "/") return "./src/index.html";
-  return "." + url;
+  if (url == "/") return "./public/index.html";
+  return "./public" + url;
 };
 
-const app = (req, res) => {
+const serveFile = (req, res) => {
+  console.log(req.url);
   let filePath = getFilePath(req.url);
   handler(res, filePath);
 };
 
+app.use(serveFile);
+
 // Export a function that can act as a handler
 
-module.exports = app;
+module.exports = app.handleRequest.bind(app);
