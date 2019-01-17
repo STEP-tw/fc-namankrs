@@ -23,12 +23,29 @@ const getFilePath = function(url) {
 };
 
 const serveFile = (req, res) => {
-  console.log(req.url);
   let filePath = getFilePath(req.url);
   handler(res, filePath);
 };
 
-app.use(serveFile);
+const readData = function(req, res, next) {
+  let body = "";
+  req.on("data", chunk => {
+    body += chunk.toString();
+  });
+  req.on("end", () => {
+    console.log(body);
+    res.end();
+  });
+};
+
+app.get("/", serveFile);
+app.get("/main.css", serveFile);
+app.get("/waterJar.js", serveFile);
+app.get("/images/flowers.jpg", serveFile);
+app.get("/images/jar.gif", serveFile);
+app.get("/guestBook.html", serveFile);
+app.post("/guestBook.html", serveFile);
+app.get("/index.html", serveFile);
 
 // Export a function that can act as a handler
 

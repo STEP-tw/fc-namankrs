@@ -13,8 +13,7 @@ class Handler {
   handleRequest(req, res) {
     let matchingPaths = this.paths.filter(path => isMatching(req, path));
     let remainingPaths = matchingPaths.slice();
-
-    let next = () => {
+    const next = function() {
       let current = matchingPaths[0];
       if (!current) return;
       remainingPaths = remainingPaths.slice(1);
