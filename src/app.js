@@ -9,7 +9,7 @@ const send = function(res, statusCode, data) {
 const handler = function(res, url, statusCode = 200) {
   fs.readFile(url, (err, data) => {
     if (err) {
-      send(res, 404, "file not found");
+      send(res, 404, "Not found");
       return;
     }
     send(res, statusCode, data);
