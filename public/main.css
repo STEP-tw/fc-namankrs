@@ -1,15 +1,19 @@
 h1 {
-  margin-left: 50%;
+  margin-left: 40%;
   color: orange;
 }
-main {
+.main {
   display: flex;
   size: 50%;
 }
-section {
+.section {
   margin-top: 20%;
 }
 
 .jar {
   margin-left: 40%;
+}
+.commentTitle {
+  font-size: 200%;
+  padding-bottom: 2%;
 }
