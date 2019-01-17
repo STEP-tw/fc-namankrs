@@ -10,16 +10,8 @@ class Handler {
     this.paths = [];
   }
 
-  handleRequest(req, res) {
-    let matchingPaths = this.paths.filter(path => isMatching(req, path));
-    let remainingPaths = matchingPaths.slice();
-    const next = function() {
-      let current = matchingPaths[0];
-      if (!current) return;
-      remainingPaths = remainingPaths.slice(1);
-      current.handler(req, res, next);
-    };
-    next();
+  use(handler) {
+    this.paths.push({ handler });
   }
 
   get(url, handler) {
@@ -30,8 +22,16 @@ class Handler {
     this.paths.push({ method: "POST", url, handler });
   }
 
-  use(handler) {
-    this.paths.push({ handler });
+  handleRequest(req, res) {
+    let matchingPaths = this.paths.filter(path => isMatching(req, path));
+    let remainingPaths = matchingPaths.slice();
+    const next = function() {
+      let current = remainingPaths[0];
+      if (!current) return;
+      remainingPaths = remainingPaths.slice(1);
+      current.handler(req, res, next);
+    };
+    next();
   }
 }
 

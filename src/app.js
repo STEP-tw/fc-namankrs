@@ -1,6 +1,7 @@
 const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
+
 const send = function(res, statusCode, data) {
   res.statusCode = statusCode;
   res.write(data);
@@ -28,16 +29,32 @@ const serveFile = (req, res) => {
 };
 
 const readData = function(req, res, next) {
-  let body = "";
-  req.on("data", chunk => {
-    body += chunk.toString();
-  });
+  let content = "";
+  req.on("data", chunk => (content += chunk.toString()));
   req.on("end", () => {
-    console.log(body);
-    res.end();
+    req.body = content;
+    next();
   });
 };
 
+const log = function(req, res, next) {
+  if (req.body) {
+    let data = req.body.split("&");
+    let formData = {};
+    formData.name = data[0].split("=")[1];
+    formData.comment = data[1].split("=")[1];
+    fs.appendFile(
+      "./public/formData.txt",
+      `${formData.name} ${formData.comment}`,
+      err => err
+    );
+    console.log(formData.name, formData.comment);
+  }
+  next();
+};
+
+app.use(readData);
+app.use(log);
 app.get("/", serveFile);
 app.get("/main.css", serveFile);
 app.get("/waterJar.js", serveFile);
