@@ -37,31 +37,43 @@ const readData = function(req, res, next) {
   });
 };
 
-const log = function(req, res, next) {
+const writeGuestData = function(req, res) {
+  fs.readFile("./public/guestBook.html", (err, formHTML) => {
+    fs.readFile("./public/formData.txt", (err, formData) => {
+      let finalData = formHTML
+        .toString()
+        .replace("##FORMDETAILSHERE##", formData.toString());
+      res.write(finalData);
+      res.end();
+    });
+  });
+};
+
+const formatData = function(data) {
+  let formattedData = {};
+  formattedData.name = data.split("&")[0].split("=")[1];
+  formattedData.comment = data.split("&")[1].split("=")[1];
+  return `${new Date().toLocaleString()} ${formattedData.name} ${
+    formattedData.comment
+  }`;
+};
+
+const serveGuestBook = function(req, res) {
   if (req.body) {
-    let data = req.body.split("&");
-    let formData = {};
-    formData.name = data[0].split("=")[1];
-    formData.comment = data[1].split("=")[1];
-    fs.appendFile(
-      "./public/formData.txt",
-      `${formData.name} ${formData.comment}`,
-      err => err
-    );
-    console.log(formData.name, formData.comment);
+    let formattedData = formatData(req.body);
+    fs.appendFile("./public/formData.txt", formattedData, err => err);
   }
-  next();
+  writeGuestData(req, res);
 };
 
 app.use(readData);
-app.use(log);
 app.get("/", serveFile);
 app.get("/main.css", serveFile);
 app.get("/waterJar.js", serveFile);
 app.get("/images/flowers.jpg", serveFile);
 app.get("/images/jar.gif", serveFile);
-app.get("/guestBook.html", serveFile);
-app.post("/guestBook.html", serveFile);
+app.post("/guestBook.html", serveGuestBook);
+app.get("/guestBook.html", serveGuestBook);
 app.get("/index.html", serveFile);
 
 // Export a function that can act as a handler
