@@ -1,3 +1,6 @@
+const EQUALS = "=";
+const AMPERSAND = "&";
+
 const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
@@ -51,8 +54,8 @@ const writeGuestData = function(req, res) {
 
 const formatData = function(data) {
   let formattedData = {};
-  formattedData.name = data.split("&")[0].split("=")[1];
-  formattedData.comment = data.split("&")[1].split("=")[1];
+  formattedData.name = data.split(AMPERSAND)[0].split(EQUALS)[1];
+  formattedData.comment = data.split(AMPERSAND)[1].split(EQUALS)[1];
   return `${new Date().toLocaleString()} ${formattedData.name} ${
     formattedData.comment
   }`;
