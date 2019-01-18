@@ -1,5 +1,6 @@
 const EQUALS = "=";
 const AMPERSAND = "&";
+const NEWLINE = "</br>";
 
 const fs = require("fs");
 const Handler = require("./handler");
@@ -46,6 +47,7 @@ const writeGuestData = function(req, res) {
       let finalData = formHTML
         .toString()
         .replace("##FORMDETAILSHERE##", formData.toString());
+      console.log(formData.toString());
       res.write(finalData);
       res.end();
     });
@@ -64,7 +66,7 @@ const formatData = function(data) {
 const serveGuestBook = function(req, res) {
   if (req.body) {
     let formattedData = formatData(req.body);
-    fs.appendFile("./public/formData.txt", formattedData, err => err);
+    fs.appendFile("./public/formData.txt", NEWLINE + formattedData, err => err);
   }
   writeGuestData(req, res);
 };
