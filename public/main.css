@@ -21,3 +21,12 @@ h1 {
 .commentsHeading {
   padding-bottom: 1%;
 }
+
+.flower {
+  display: flex;
+}
+
+.text {
+  margin-top: 15%;
+  margin-left: 1%;
+}
