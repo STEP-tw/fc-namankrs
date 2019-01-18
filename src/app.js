@@ -1,10 +1,8 @@
-const EQUALS = "=";
-const AMPERSAND = "&";
-const NEWLINE = "</br>";
-
 const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
+
+const { EQUALS, AMPERSAND, NEWLINE, reverse, insert } = require("./appUtil");
 
 const send = function(res, statusCode, data) {
   res.statusCode = statusCode;
@@ -44,10 +42,10 @@ const readData = function(req, res, next) {
 const writeGuestData = function(req, res) {
   fs.readFile("./public/guestBook.html", (err, formHTML) => {
     fs.readFile("./public/formData.txt", (err, formData) => {
-      let finalData = formHTML
-        .toString()
-        .replace("##FORMDETAILSHERE##", formData.toString());
-      console.log(formData.toString());
+      formData = reverse(formData);
+
+      let finalData = insert(formData, formHTML);
+
       res.write(finalData);
       res.end();
     });
@@ -58,7 +56,7 @@ const formatData = function(data) {
   let formattedData = {};
   formattedData.name = data.split(AMPERSAND)[0].split(EQUALS)[1];
   formattedData.comment = data.split(AMPERSAND)[1].split(EQUALS)[1];
-  return `${new Date().toLocaleString()} ${formattedData.name} ${
+  return `${new Date().toLocaleString()} Name: ${formattedData.name} Comment: ${
     formattedData.comment
   }`;
 };
