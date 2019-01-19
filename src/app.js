@@ -41,7 +41,7 @@ const readData = function(req, res, next) {
 
 const writeGuestData = function(req, res) {
   fs.readFile("./public/guestBook.html", (err, formHTML) => {
-    fs.readFile("./public/formData.txt", (err, formData) => {
+    fs.readFile("./public/comments.txt", (err, formData) => {
       formData = reverse(formData);
 
       let finalData = insert(formData, formHTML);
@@ -64,7 +64,7 @@ const formatData = function(data) {
 const serveGuestBook = function(req, res) {
   if (req.body) {
     let formattedData = formatData(req.body);
-    fs.appendFile("./public/formData.txt", NEWLINE + formattedData, err => err);
+    fs.appendFile("./public/comments.txt", NEWLINE + formattedData, err => err);
   }
   writeGuestData(req, res);
 };
