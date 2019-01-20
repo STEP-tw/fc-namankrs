@@ -2,7 +2,13 @@ const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
 
-const { EQUALS, AMPERSAND, NEWLINE, reverse, insert } = require("./appUtil");
+const {
+  EQUALS,
+  AMPERSAND,
+  NEWLINE,
+  formatComments,
+  insert
+} = require("./appUtil");
 
 const send = function(res, statusCode, data) {
   res.statusCode = statusCode;
@@ -45,8 +51,8 @@ const readData = function(req, res, next) {
 const writeGuestData = function(req, res) {
   fs.readFile("./public/guestBook.html", (err, formHTML) => {
     fs.readFile("./public/comments.txt", (err, formData) => {
-      let reversedData = reverse(formData);
-      let finalData = insert(reversedData, formHTML);
+      let formattedComments = formatComments(formData);
+      let finalData = insert(formattedComments, formHTML);
       res.write(finalData);
       res.end();
     });
@@ -72,8 +78,8 @@ const serveGuestBook = function(req, res) {
 
 const serveComments = function(req, res) {
   fs.readFile("./public/comments.txt", (error, comments) => {
-    let chronologicallyReversedData = reverse(comments);
-    send(res, 200, chronologicallyReversedData);
+    let formattedComments = formatComments(comments);
+    send(res, 200, formattedComments);
   });
 };
 
