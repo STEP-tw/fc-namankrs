@@ -26,6 +26,7 @@ const getFilePath = function(url) {
 };
 
 const serveFile = (req, res) => {
+  console.log(req.url);
   let filePath = getFilePath(req.url);
   handler(res, filePath);
 };
@@ -42,9 +43,9 @@ const readData = function(req, res, next) {
 const writeGuestData = function(req, res) {
   fs.readFile("./public/guestBook.html", (err, formHTML) => {
     fs.readFile("./public/comments.txt", (err, formData) => {
-      formData = reverse(formData);
+      let reversedData = reverse(formData);
 
-      let finalData = insert(formData, formHTML);
+      let finalData = insert(reversedData, formHTML);
 
       res.write(finalData);
       res.end();
@@ -69,6 +70,12 @@ const serveGuestBook = function(req, res) {
   writeGuestData(req, res);
 };
 
+const renderErrorPage = function(req, res) {
+  res.statusCode = 200;
+  res.end;
+  return;
+};
+
 app.use(readData);
 app.get("/", serveFile);
 app.get("/main.css", serveFile);
@@ -78,6 +85,14 @@ app.get("/images/jar.gif", serveFile);
 app.post("/guestBook.html", serveGuestBook);
 app.get("/guestBook.html", serveGuestBook);
 app.get("/index.html", serveFile);
+app.get("/abeliophyllum.html", serveFile);
+app.get("/agerantum.html", serveFile);
+app.get("/images/abeliophyllum.jpg", serveFile);
+app.get("/images/agerantum.jpg", serveFile);
+app.get("/books/Abeliophyllum.pdf", serveFile);
+app.get("/books/agerantum.pdf", serveFile);
+app.get("/index.html", serveFile);
+app.use(renderErrorPage);
 
 // Export a function that can act as a handler
 
