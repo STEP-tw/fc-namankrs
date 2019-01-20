@@ -13,7 +13,7 @@ const send = function(res, statusCode, data) {
 const handler = function(res, url, statusCode = 200) {
   fs.readFile(url, (err, data) => {
     if (err) {
-      res.statusCode = 200;
+      res.statusCode = 404;
       res.end();
       return;
     }
@@ -46,9 +46,7 @@ const writeGuestData = function(req, res) {
   fs.readFile("./public/guestBook.html", (err, formHTML) => {
     fs.readFile("./public/comments.txt", (err, formData) => {
       let reversedData = reverse(formData);
-
       let finalData = insert(reversedData, formHTML);
-
       res.write(finalData);
       res.end();
     });
@@ -72,10 +70,17 @@ const serveGuestBook = function(req, res) {
   writeGuestData(req, res);
 };
 
-app.use(readData);
+const serveComments = function(req, res) {
+  fs.readFile("./public/comments.txt", (error, comments) => {
+    let chronologicallyReversedData = reverse(comments);
+    send(res, 200, chronologicallyReversedData);
+  });
+};
 
+app.use(readData);
 app.post("/guestBook.html", serveGuestBook);
 app.get("/guestBook.html", serveGuestBook);
+app.get("/comments.txt", serveComments);
 app.use(serveFile);
 
 // Export a function that can act as a handler

@@ -13,8 +13,7 @@ const refreshComments = function() {
       return response.text();
     })
     .then(function(data) {
-      let reversedData = reverse(data);
       let previousComments = document.getElementById("comments");
-      previousComments.innerHTML = reversedData;
+      previousComments.innerHTML = data;
     });
 };
