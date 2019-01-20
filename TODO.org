@@ -1,2 +1,3 @@
 * TODO introduce a not found page
 * TODO manage encodings
+* TODO handle formatting from app.js rather than fetch

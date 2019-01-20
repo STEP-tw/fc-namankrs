@@ -1,6 +1,7 @@
 const EQUALS = "=";
 const AMPERSAND = "&";
 const NEWLINE = "</br>";
+
 const reverse = data =>
   data
     .toString()
