@@ -5,18 +5,14 @@
     <h1><a href="index.html"><<</a> GUEST BOOK</h1>
   </head>
   <body id="body">
-    <form action="" method="POST">
-      <div class="commentTitle">Leave a comment</div>
+    <form action="login" method="POST">
+      <div class="commentTitle">Login to comment</div>
       <span>Name:</span><input type="text" required name="name" />
-      <div>
-        <span>Comment:</span
-        ><textarea rows="4" cols="20" required name="comment"></textarea>
-      </div>
-      <input type="submit" />
+      <input type="submit" value="Login" />
     </form>
     <hr />
-    <button onclick="refreshComments()">Refresh &#x21bb;</button>
-    <div class="commentsHeading">DATETIME_NAME_COMMENTS_LIST</div>
+    <b>Comments</b>&nbsp;<button onclick="refreshComments()">&#x21bb;</button
+    ><br /><br />
     <div id="comments">##FORMDETAILSHERE##</div>
     <hr />
   </body>
