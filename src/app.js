@@ -15,12 +15,6 @@ const {
   send
 } = require("./appUtil");
 
-/**
- * reads the file and calls send with file contents.
- * @param {object} res
- * @param {string} url
- * @param {number} statusCode
- */
 const handler = function(res, url, statusCode = 200) {
   fs.readFile(url, (err, data) => {
     if (err) {
