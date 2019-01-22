@@ -100,7 +100,15 @@ const serveGuestBook = function(req, res) {
   send(res, 200, finalData);
 };
 
+const logout = function(req, res) {
+  res.setHeader("Set-Cookie", "cookie;expires=Thu, Jan 01 1970 00:00:00 GMT;");
+  res.statusCode = 302;
+  res.setHeader("Location", "/guestBook.html");
+  res.end();
+};
+
 app.use(readData);
+app.post("/logout", logout);
 app.get("/guestBook.html", serveGuestBook);
 app.post("/guestBook.html", loginUser);
 app.get("/comments.txt", serveComments);

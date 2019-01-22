@@ -1,6 +1,11 @@
 <div class="commentTitle">Leave a comment</div>
 <section class="bottomPadding">
-  <span>Name: ##NAMEHERE##</span>&nbsp;&nbsp;<button>Logout</button>
+  <form action="/logout" method="POST">
+    <span>Name: ##NAMEHERE##</span>&nbsp;&nbsp;<input
+      type="submit"
+      value="Logout"
+    />
+  </form>
 </section>
 <span>Comment:</span>&nbsp;
 <form method="POST" action="">

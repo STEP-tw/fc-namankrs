@@ -8,15 +8,3 @@ const refreshComments = function() {
       previousComments.innerHTML = data;
     });
 };
-
-const renderLoggedInSection = function() {
-  let name = document.getElementById("userName").value;
-  let partialPage = document.getElementById("loginDetails");
-  fetch("/guestBookLoggedIn.html")
-    .then(function(response) {
-      return response.text();
-    })
-    .then(function(data) {
-      partialPage.innerHTML = data.toString().replace("##NAMEHERE##", name);
-    });
-};
