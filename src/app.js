@@ -1,26 +1,19 @@
 const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
+let comments = fs.readFileSync("./public/comments.txt").toString();
+const guestBook = fs.readFileSync("./public/guestBook.html").toString();
+const loginForm = fs.readFileSync("./public/login.html").toString();
+const loggedInForm = fs.readFileSync("./public/loggedIn.html").toString();
 
 const {
-  EQUALS,
-  AMPERSAND,
-  NEWLINE,
   formatComments,
-  insert
+  insert,
+  getValue,
+  formatData,
+  getFilePath,
+  send
 } = require("./appUtil");
-
-/**
- *sends response and ends it.
- * @param {object} res
- * @param {number} statusCode
- * @param {string} data
- */
-const send = function(res, statusCode, data) {
-  res.statusCode = statusCode;
-  res.write(data);
-  res.end();
-};
 
 /**
  * reads the file and calls send with file contents.
@@ -37,17 +30,6 @@ const handler = function(res, url, statusCode = 200) {
     }
     send(res, statusCode, data);
   });
-};
-
-const addPrefixPublic = url => "./public" + url;
-
-/**
- * add public directory address to the req.url
- * @param {string} url
- */
-const getFilePath = function(url) {
-  if (url == "/") return addPrefixPublic("/index.html");
-  return addPrefixPublic(url);
 };
 
 const serveFile = (req, res) => {
@@ -71,52 +53,62 @@ const readData = function(req, res, next) {
   });
 };
 
-const serveGuestBook = function(req, res) {
-  fs.readFile("./public/guestBookLogin.html", (err, formHTML) => {
-    fs.readFile("./public/comments.txt", (err, formData) => {
-      let formattedComments = formatComments(formData);
-      let finalData = insert(formattedComments, formHTML);
-      res.write(finalData);
-      res.end();
-    });
-  });
-};
-
-/**
- * splits the data to name and comments and adds current date and time to it.
- * @param {string} data
- */
-const formatData = function(data) {
-  let formattedData = {};
-  formattedData.name = data.split(AMPERSAND)[0].split(EQUALS)[1];
-  formattedData.comment = data.split(AMPERSAND)[1].split(EQUALS)[1];
-  return `${new Date().toLocaleString()} Name: ${formattedData.name} Comment: ${
-    formattedData.comment
-  }`;
-};
-
-/**
- * serves the whole guest book page
- */
-const writeGuestbook = function(req, res) {
-  if (req.body) {
-    let formattedData = formatData(req.body);
-    fs.appendFile("./public/comments.txt", NEWLINE + formattedData, err => err);
-  }
-  serveGuestBook(req, res);
-};
-
 /** serves comments for refresh button */
 const serveComments = function(req, res) {
-  fs.readFile("./public/comments.txt", (error, comments) => {
-    let formattedComments = formatComments(comments);
-    send(res, 200, formattedComments);
-  });
+  let formattedComments = formatComments(comments);
+  send(res, 200, formattedComments);
+};
+
+const generateLoggedInForm = function(name) {
+  let guestForm = guestBook.replace("##FORMTEMPLATE##", loggedInForm);
+  return guestForm.replace("##NAMEHERE##", name);
+};
+
+const appendNameAndComments = function(name) {
+  let namedForm = generateLoggedInForm(name);
+  return namedForm.replace("##COMMENTSHERE##", formatComments(comments));
+};
+
+const generateLoginPage = function(req, res) {
+  name = getValue(req.body);
+  res.setHeader("Set-Cookie", name);
+  let finalGuestForm = appendNameAndComments(name);
+  send(res, 200, finalGuestForm);
+};
+
+const generateLoggedInPage = function(req, res) {
+  let name = req.headers.cookie;
+  let comment = getValue(req.body);
+  let formattedData = formatData(name, comment);
+  fs.appendFile("./public/comments.txt", formattedData, err => err);
+  comments = comments.concat(formattedData);
+  let finalGuestForm = appendNameAndComments(name);
+  send(res, 200, finalGuestForm);
+};
+
+const loginUser = function(req, res) {
+  let name = req.headers.cookie;
+  if (!name) {
+    generateLoginPage(req, res);
+    return;
+  }
+  generateLoggedInPage(req, res);
+};
+
+const serveGuestBook = function(req, res) {
+  let name = req.headers.cookie;
+  let formHTML = guestBook.replace("##FORMTEMPLATE##", loginForm);
+  if (name) {
+    formHTML = generateLoggedInForm(name);
+  }
+  let formattedComments = formatComments(comments);
+  let finalData = insert(formattedComments, formHTML);
+  send(res, 200, finalData);
 };
 
 app.use(readData);
-app.get("/guestBookLogin.html", serveGuestBook);
-app.post("/guestBookLogin.html", writeGuestbook);
+app.get("/guestBook.html", serveGuestBook);
+app.post("/guestBook.html", loginUser);
 app.get("/comments.txt", serveComments);
 app.use(serveFile);
 
