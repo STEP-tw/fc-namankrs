@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <script src="/refreshComments.js"></script>
+    <link rel="stylesheet" href="main.css" />
+    <h1><a href="index.html"><<</a> GUEST BOOK</h1>
+  </head>
+  <body id="body">
+    <form action="" method="POST">
+      <div class="commentTitle">Leave a comment</div>
+      <section class="bottomPadding">
+        <span>Name: ##NAMEHERE##</span>&nbsp;&nbsp;<button>Logout</button>
+      </section>
+      <section class="bottomPadding">
+        <span>Comment:</span>&nbsp;<textarea rows="2" cols="20"></textarea>
+      </section>
+      <input type="submit" />
+    </form>
+    <hr />
+    <b>Comments</b>&nbsp;<button onclick="refreshComments()">&#x21bb;</button
+    ><br /><br />
+    <div id="comments">##FORMDETAILSHERE##</div>
+    <hr />
+  </body>
+</html>

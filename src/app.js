@@ -61,6 +61,7 @@ const serveFile = (req, res) => {
  * @param {object} res
  * @param {function} next
  */
+
 const readData = function(req, res, next) {
   let content = "";
   req.on("data", chunk => (content += chunk.toString()));
@@ -70,13 +71,8 @@ const readData = function(req, res, next) {
   });
 };
 
-/**
- * integrates form html with the comments.
- * @param {object} req
- * @param {object} res
- */
-const writeGuestData = function(req, res) {
-  fs.readFile("./public/guestBook.html", (err, formHTML) => {
+const serveGuestBook = function(req, res) {
+  fs.readFile("./public/guestBookLogin.html", (err, formHTML) => {
     fs.readFile("./public/comments.txt", (err, formData) => {
       let formattedComments = formatComments(formData);
       let finalData = insert(formattedComments, formHTML);
@@ -102,12 +98,12 @@ const formatData = function(data) {
 /**
  * serves the whole guest book page
  */
-const serveGuestBook = function(req, res) {
+const writeGuestbook = function(req, res) {
   if (req.body) {
     let formattedData = formatData(req.body);
     fs.appendFile("./public/comments.txt", NEWLINE + formattedData, err => err);
   }
-  writeGuestData(req, res);
+  serveGuestBook(req, res);
 };
 
 /** serves comments for refresh button */
@@ -119,8 +115,8 @@ const serveComments = function(req, res) {
 };
 
 app.use(readData);
-app.post("/guestBook.html", serveGuestBook);
-app.get("/guestBook.html", serveGuestBook);
+app.get("/guestBookLogin.html", serveGuestBook);
+app.post("/guestBookLogin.html", writeGuestbook);
 app.get("/comments.txt", serveComments);
 app.use(serveFile);
 
