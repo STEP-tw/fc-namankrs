@@ -32,13 +32,6 @@ const serveFile = (req, res) => {
   handler(res, filePath);
 };
 
-/**
- * reads the data asynchronously and adds it to request body.
- * @param {object} req
- * @param {object} res
- * @param {function} next
- */
-
 const readData = function(req, res, next) {
   let content = "";
   req.on("data", chunk => (content += chunk.toString()));
