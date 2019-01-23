@@ -2,7 +2,7 @@ const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
 
-let comments = fs.readFileSync("./public/comments.txt").toString();
+let comments = fs.readFileSync("./public/comments").toString();
 const guestBook = fs.readFileSync("./public/guestBook.html").toString();
 const loginForm = fs.readFileSync("./public/login.html").toString();
 const loggedInForm = fs.readFileSync("./public/loggedIn.html").toString();
@@ -68,7 +68,7 @@ const generateLoggedInPage = function(req, res) {
   let name = req.headers.cookie;
   let comment = getValue(req.body);
   let formattedData = formatData(name, comment);
-  fs.appendFile("./public/comments.txt", formattedData, err => err);
+  fs.appendFile("./public/comments", formattedData, err => err);
   comments = comments.concat(formattedData);
   let finalGuestForm = appendNameAndComments(name);
   send(res, 200, finalGuestForm);
@@ -105,7 +105,7 @@ app.use(readData);
 app.post("/logout", logout);
 app.get("/guestBook.html", serveGuestBook);
 app.post("/guestBook.html", loginUser);
-app.get("/comments.txt", serveComments);
+app.get("/comments", serveComments);
 app.use(serveFile);
 
 // Export a function that can act as a handler

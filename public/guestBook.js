@@ -1,5 +1,5 @@
 const refreshComments = function() {
-  fetch("/comments.txt")
+  fetch("/comments")
     .then(function(response) {
       return response.text();
     })

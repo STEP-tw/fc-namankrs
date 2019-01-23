@@ -104,7 +104,7 @@ const readData = function(req, res, next) {
  */
 const writeGuestData = function(req, res) {
   fs.readFile("./public/guestBookLogin.html", (err, formHTML) => {
-    fs.readFile("./public/comments.txt", (err, formData) => {
+    fs.readFile("./public/comments", (err, formData) => {
       let formattedComments = formatComments(formData);
       let finalData = insert(formattedComments, formHTML);
       res.write(finalData);
@@ -132,14 +132,14 @@ const formatData = function(data) {
 const serveGuestBook = function(req, res) {
   if (req.body) {
     let formattedData = formatData(req.body);
-    fs.appendFile("./public/comments.txt", NEWLINE + formattedData, err => err);
+    fs.appendFile("./public/comments", NEWLINE + formattedData, err => err);
   }
   writeGuestData(req, res);
 };
 
 /** serves comments for refresh button */
 const serveComments = function(req, res) {
-  fs.readFile("./public/comments.txt", (error, comments) => {
+  fs.readFile("./public/comments", (error, comments) => {
     let formattedComments = formatComments(comments);
     send(res, 200, formattedComments);
   });
@@ -148,7 +148,7 @@ const serveComments = function(req, res) {
 app.use(readData);
 app.post("/guestBookLogin.html", serveGuestBook);
 app.get("/guestBookLogin.html", serveGuestBook);
-app.get("/comments.txt", serveComments);
+app.get("/comments", serveComments);
 app.use(serveFile);
 
 // Export a function that can act as a handler
