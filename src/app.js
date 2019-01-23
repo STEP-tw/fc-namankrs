@@ -1,6 +1,7 @@
 const fs = require("fs");
 const Handler = require("./handler");
 const app = new Handler();
+
 let comments = fs.readFileSync("./public/comments.txt").toString();
 const guestBook = fs.readFileSync("./public/guestBook.html").toString();
 const loginForm = fs.readFileSync("./public/login.html").toString();
