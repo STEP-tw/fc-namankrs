@@ -7,25 +7,7 @@ const guestBook = fs.readFileSync("./public/guestBook.html").toString();
 const loginForm = fs.readFileSync("./public/login.html").toString();
 const loggedInForm = fs.readFileSync("./public/loggedIn.html").toString();
 
-const {
-  formatComments,
-  insert,
-  getValue,
-  formatData,
-  getFilePath,
-  send
-} = require("./appUtil");
-
-const handler = function(res, url, statusCode = 200) {
-  fs.readFile(url, (err, data) => {
-    if (err) {
-      res.statusCode = 404;
-      res.end();
-      return;
-    }
-    send(res, statusCode, data);
-  });
-};
+const { formatComments, insert, getValue, formatData } = require("./appUtil");
 
 const readData = function(req, res, next) {
   let content = "";
@@ -39,7 +21,8 @@ const readData = function(req, res, next) {
 /** serves comments for refresh button */
 const serveComments = function(req, res) {
   let formattedComments = formatComments(comments);
-  send(res, 200, formattedComments);
+  console.log("hello");
+  res.send(formattedComments);
 };
 
 const generateLoggedInForm = function(name) {
@@ -56,7 +39,7 @@ const generateLoginPage = function(req, res) {
   name = getValue(req.body);
   res.setHeader("Set-Cookie", name);
   let finalGuestForm = appendNameAndComments(name);
-  send(res, 200, finalGuestForm);
+  res.send(finalGuestForm);
 };
 
 const generateLoggedInPage = function(req, res) {
@@ -66,7 +49,7 @@ const generateLoggedInPage = function(req, res) {
   fs.appendFile("./public/comments", formattedData, err => err);
   comments = comments.concat(formattedData);
   let finalGuestForm = appendNameAndComments(name);
-  send(res, 200, finalGuestForm);
+  res.send(finalGuestForm);
 };
 
 const loginUser = function(req, res) {
@@ -86,7 +69,7 @@ const serveGuestBook = function(req, res) {
   }
   let formattedComments = formatComments(comments);
   let finalData = insert(formattedComments, formHTML);
-  send(res, 200, finalData);
+  res.send(finalData);
 };
 
 const logout = function(req, res) {
@@ -96,12 +79,12 @@ const logout = function(req, res) {
   res.end();
 };
 
-app.use(express.static("public"));
 app.use(readData);
 app.post("/logout", logout);
 app.get("/guestBook.html", serveGuestBook);
 app.post("/guestBook.html", loginUser);
 app.get("/comments", serveComments);
+app.use(express.static("public"));
 
 // Export a function that can act as a handler
 
