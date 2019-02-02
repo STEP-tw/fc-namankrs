@@ -1,6 +1,6 @@
 const fs = require("fs");
-const Handler = require("./handler");
-const app = new Handler();
+const express = require("express");
+const app = express();
 
 let comments = fs.readFileSync("./public/comments").toString();
 const guestBook = fs.readFileSync("./public/guestBook.html").toString();
@@ -110,4 +110,4 @@ app.use(serveFile);
 
 // Export a function that can act as a handler
 
-module.exports = app.handleRequest.bind(app);
+module.exports = app;

@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/STEP-tw/fc-namankrs#readme",
   "description": "",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.16.4"
+  },
   "devDependencies": {
     "jsdoc": "^3.5.5",
     "nodemon": "^1.18.9",
