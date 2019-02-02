@@ -27,11 +27,6 @@ const handler = function(res, url, statusCode = 200) {
   });
 };
 
-const serveFile = (req, res) => {
-  let filePath = getFilePath(req.url);
-  handler(res, filePath);
-};
-
 const readData = function(req, res, next) {
   let content = "";
   req.on("data", chunk => (content += chunk.toString()));
@@ -101,12 +96,12 @@ const logout = function(req, res) {
   res.end();
 };
 
+app.use(express.static("public"));
 app.use(readData);
 app.post("/logout", logout);
 app.get("/guestBook.html", serveGuestBook);
 app.post("/guestBook.html", loginUser);
 app.get("/comments", serveComments);
-app.use(serveFile);
 
 // Export a function that can act as a handler
 
